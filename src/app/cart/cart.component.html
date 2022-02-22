@@ -1,14 +1,14 @@
 <div class="row">
-  <div class="col-xs-10">
-    <hr />
-    <ul class="list-group">
-      <a
-        class="list-group-item"
-        style="cursor: pointer"
-        *ngFor="let product of products; let i = index"
-      >
-        {{ product.name }} ({{ product.amount }})
-      </a>
-    </ul>
+  <div class="col-xs-12">
+    <app-cart-item
+      *ngFor="let cartItem of cartItems; let i = index"
+      [cartItem]="cartItem"
+      [index]="i"
+    ></app-cart-item>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <app-checkout *ngIf="cartItems.length !== 0"></app-checkout>
   </div>
 </div>

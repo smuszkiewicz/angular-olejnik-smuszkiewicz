@@ -1,18 +1,21 @@
 export class Product {
+  public id: number;
   public name: string;
-  public desc: string;
   public imagePath: string;
+  public desc: string;
   public price: number;
 
   constructor(
+    id: number,
     name: string,
-    desc: string,
     imagePath: string,
+    desc: string,
     price: number
   ) {
+    this.id = id;
     this.name = name;
-    this.desc = desc;
     this.imagePath = imagePath;
+    this.desc = desc;
     this.price = price;
   }
 }

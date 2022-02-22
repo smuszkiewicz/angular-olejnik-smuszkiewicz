@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="com-xs-12">
+    <div class="alert alert-danger" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+    <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          class="form-control"
+          ngModel
+          name="email"
+          required
+          email
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Hasło</label>
+        <input
+          type="password"
+          id="password"
+          class="form-control"
+          ngModel
+          name="password"
+          required
+          minlength="6"
+        />
+      </div>
+      <div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!authForm.valid"
+        >
+          {{ isLoginMode ? "Zaloguj" : "Zarejestruj" }}
+        </button>
+        &nbsp;
+        <button class="btn btn-primary" (click)="onSwitchMode()" type="button">
+          {{ isLoginMode ? "Przejdź do rejestracji" : "Przejdź do logowania" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -3,9 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProductDetailComponent } from './products/product-detail/product-detail.component';
 import { ProductEditComponent } from './products/product-edit/product-edit.component';
 import { ProductStartComponent } from './products/product-start/product-start.component';
-import { ProductsResolverService } from './products/products-resolver.service';
 import { ProductsComponent } from './products/products.component';
 import { CartComponent } from './cart/cart.component';
+import { AuthComponent } from './auth/auth.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/products', pathMatch: 'full' },
@@ -18,16 +18,15 @@ const appRoutes: Routes = [
       {
         path: ':id',
         component: ProductDetailComponent,
-        resolve: [ProductsResolverService],
       },
       {
         path: ':id/edit',
         component: ProductEditComponent,
-        resolve: [ProductsResolverService],
       },
     ],
   },
   { path: 'cart', component: CartComponent },
+  { path: 'auth', component: AuthComponent },
 ];
 
 @NgModule({

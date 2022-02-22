@@ -15,17 +15,23 @@
 </div>
 <div class="row">
   <div class="col-xs-12">
-    <div class="btn-group"
+    <button
+      class="btn btn-success"
+      (click)="onAddToCart()"
+      *ngIf="isAuthenticated"
+    >
+      Dodaj do koszyka
+    </button>
+    <!-- <div class="btn-group"
     appDropdown>
       <button type="button" class="btn btn-primary dropdown-toggle">
         Zarządzaj <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu">
-        <li><a (click)="onAddToCart()" style="cursor: pointer;">Dodaj do koszyka</a></li>
+      </button> -->
+    <!-- <ul class="dropdown-menu">
         <li><a style="cursor: pointer;" (click)="onEditProduct()">Edytuj</a></li>
         <li><a style="cursor: pointer;" (click)="onDeleteProduct()">Usuń</a></li>
-      </ul>
-    </div>
+      </ul> -->
+    <!-- </div> -->
   </div>
 </div>
 <div class="row">
@@ -34,7 +40,5 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-xs-12">
-    Cena: {{ product.price }}
-  </div>
+  <div class="col-xs-12">Cena: {{ product.price }}</div>
 </div>

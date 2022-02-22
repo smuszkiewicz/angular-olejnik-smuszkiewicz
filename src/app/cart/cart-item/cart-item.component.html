@@ -1,0 +1,23 @@
+<a class="list-group-item clearfix">
+  <div class="pull-left">
+    <h4 class="list-group-item-heading">{{ cartItem.name }}</h4>
+    <p class="list-group-item-text">{{ cartItem.price }}</p>
+  </div>
+  <span class="pull-right">
+    <span class="badge badge-secondary">x {{ cartItem.amount }}</span>
+    <button
+      type="button"
+      class="btn btn-danger"
+      (click)="onRemove(cartItem.id)"
+    >
+      -
+    </button>
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="onAdd(cartItem.id, cartItem.name, cartItem.price, 1)"
+    >
+      +
+    </button>
+  </span>
+</a>

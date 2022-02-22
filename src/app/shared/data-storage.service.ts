@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Product } from '../products/product.model';
 import { ProductService } from '../products/product.service';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DataStorageService {
-  constructor(private http: HttpClient, private productService: ProductService) {}
+  constructor(
+    private http: HttpClient,
+    private productService: ProductService
+  ) {}
 
   storeProducts() {
     const products = this.productService.getProducts();
@@ -21,21 +24,35 @@ export class DataStorageService {
   }
 
   fetchProducts() {
-    return this.http
+    this.http
+      .get<Product[]>(
+        'https://sklepik-olejnik-smuszkie-5edcf-default-rtdb.firebaseio.com/products.json'
+      )
+      .subscribe((loadedProducts) => {
+        const products = [];
+        for (const key in loadedProducts) {
+          products.push({
+            id: key,
+            name: loadedProducts[key].name,
+            imagePath: loadedProducts[key].imagePath,
+            desc: loadedProducts[key].desc,
+            price: loadedProducts[key].price,
+          });
+        }
+        this.productService.setProducts(products);
+      });
+  }
+
+  fetchProductss() {
+    console.log('tu');
+    this.http
       .get<Product[]>(
         'https://sklepik-olejnik-smuszkie-5edcf-default-rtdb.firebaseio.com/products.json'
       )
       .pipe(
         map((products) => {
-          return products.map((product) => {
-            return {
-              ...product
-            };
-          });
-        }),
-        tap(products => {
-            this.productService.setProducts(products);
+          return console.log(products);
         })
-      )
+      );
   }
 }

@@ -16,6 +16,10 @@ import { DropdownDirective } from './shared/dropdown.directive';
 import { AppRoutingModule } from './app-routing.module';
 import { CartService } from './cart/cart.service';
 import { ProductService } from './products/product.service';
+import { CartItemComponent } from './cart/cart-item/cart-item.component';
+import { CheckoutComponent } from './cart/checkout/checkout.component';
+import { AuthComponent } from './auth/auth.component';
+// import { AuthInterceptorService } from './auth/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -28,16 +32,27 @@ import { ProductService } from './products/product.service';
     CartComponent,
     DropdownDirective,
     ProductStartComponent,
-    ProductEditComponent
+    ProductEditComponent,
+    CartItemComponent,
+    CheckoutComponent,
+    AuthComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
-  providers: [CartService, ProductService],
-  bootstrap: [AppComponent]
+  providers: [
+    CartService,
+    ProductService,
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthInterceptorService,
+    //   multi: true,
+    // },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

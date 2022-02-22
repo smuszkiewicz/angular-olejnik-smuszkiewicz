@@ -19,8 +19,13 @@ export class ProductService {
     return this.products.slice()[index];
   }
 
-  addProductToCart(product: Product) {
-    this.cartService.addProduct(product);
+  addProductToCart(product: Product, amount: number) {
+    this.cartService.addCartItem(
+      product.id,
+      product.name,
+      product.price,
+      amount
+    );
   }
 
   addProduct(product: Product) {
@@ -34,7 +39,7 @@ export class ProductService {
   }
 
   deleteProduct(index: number) {
-    this.products.splice(index, 1)
+    this.products.splice(index, 1);
     this.productsChanged.next(this.products.slice());
   }
 

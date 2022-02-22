@@ -3,8 +3,16 @@
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-xs-12">
-          <button type="submit" class="btn btn-success" [disabled]="!productForm.valid">Save</button>
-          <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!productForm.valid"
+          >
+            Zapisz
+          </button>
+          <button type="button" class="btn btn-danger" (click)="onCancel()">
+            Anuluj
+          </button>
         </div>
       </div>
       <div class="row">
@@ -57,13 +65,12 @@
         <div class="col-xs-12">
           <div class="form-group">
             <label for="price">Cena</label>
-            <textarea
+            <input
               type="number"
               id="price"
               class="form-control"
               formControlName="price"
-              rows="6"
-            ></textarea>
+            />
           </div>
         </div>
       </div>

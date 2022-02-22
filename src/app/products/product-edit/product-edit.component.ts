@@ -1,13 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  Form,
-  FormArray,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Product } from '../product.model';
 import { ProductService } from '../product.service';
 
 @Component({
@@ -68,5 +61,4 @@ export class ProductEditComponent implements OnInit {
   onCancel() {
     this.router.navigate(['../'], { relativeTo: this.route });
   }
-
 }
