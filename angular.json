@@ -95,6 +95,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "angular-olejnik-smuszkiewicz:build:production",
+            "firebaseProject": "sklepik-olejnik-smuszkie-5edcf",
+            "firebaseHostingSite": "sklepik-olejnik-smuszkie-5edcf"
+          }
         }
       }
     }

@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "sklepik-olejnik-smuszkie-5edcf": {
+      "hosting": {
+        "angular-olejnik-smuszkiewicz": [
+          "sklepik-olejnik-smuszkie-5edcf"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "sklepik-olejnik-smuszkie-5edcf"
+  }
+}

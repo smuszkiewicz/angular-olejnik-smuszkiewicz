@@ -1,12 +1,12 @@
 export class Product {
-  public id: number;
+  public id: string;
   public name: string;
   public imagePath: string;
   public desc: string;
   public price: number;
 
   constructor(
-    id: number,
+    id: string,
     name: string,
     imagePath: string,
     desc: string,

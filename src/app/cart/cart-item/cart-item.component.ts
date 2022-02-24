@@ -16,11 +16,11 @@ export class CartItemComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  onAdd(id: number, name: string, price: number, amount: number) {
+  onAdd(id: string, name: string, price: number, amount: number) {
     this.cartService.addCartItem(id, name, price, amount);
   }
 
-  onRemove(id: number) {
+  onRemove(id: string) {
     this.cartService.removeCartItem(id);
   }
 }

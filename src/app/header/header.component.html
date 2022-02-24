@@ -10,7 +10,12 @@
           <a routerLink="/products">Produkty</a>
         </li>
         <li routerLinkActive="active">
-          <a routerLink="/cart" *ngIf="isAuthenticated">Koszyk</a>
+          <a routerLink="/cart" *ngIf="isAuthenticated && !isAdmin">Koszyk</a>
+        </li>
+        <li routerLinkActive="active">
+          <a routerLink="/add" *ngIf="isAuthenticated && isAdmin"
+            >Dodaj produkt</a
+          >
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">

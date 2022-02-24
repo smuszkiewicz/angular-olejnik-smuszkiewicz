@@ -1,43 +1,41 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-import { ProductService } from '../products/product.service';
-import { DataStorageService } from '../shared/data-storage.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
+@Injectable({ providedIn: 'root' })
 export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
-  private userSub: Subscription;
+  isAdmin: boolean;
+  private subscription: Subscription;
 
-  constructor(
-    private dataStorageService: DataStorageService,
-    private productService: ProductService,
-    private authService: AuthService
-  ) {}
+  constructor(private authService: AuthService, private auth: Auth) {}
 
   ngOnInit(): void {
-    this.userSub = this.authService.user.subscribe((user) => {
-      this.isAuthenticated = !user ? false : true;
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.isAuthenticated = true;
+      } else {
+        this.isAuthenticated = false;
+      }
     });
-  }
-
-  onSaveData() {
-    this.dataStorageService.storeProducts();
-  }
-
-  ofFetchData() {
-    this.dataStorageService.fetchProducts();
+    this.subscription = this.authService.isAdminChanged.subscribe(
+      (isAdmin: boolean) => {
+        this.isAdmin = isAdmin;
+      }
+    );
   }
 
   onLogout() {
     this.authService.logout();
   }
 
-  ngOnDestroy() {
-    this.userSub.unsubscribe();
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

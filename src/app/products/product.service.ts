@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { collection, doc, Firestore, setDoc } from '@angular/fire/firestore';
 import { Subject } from 'rxjs';
 
 import { CartService } from '../cart/cart.service';
@@ -9,7 +10,9 @@ export class ProductService {
   productsChanged = new Subject<Product[]>();
   private products: Product[] = [];
 
-  constructor(private cartService: CartService) {}
+  prodRef = collection(this.afs, 'products');
+
+  constructor(private cartService: CartService, private afs: Firestore) {}
 
   getProducts() {
     return this.products.slice();
@@ -29,8 +32,12 @@ export class ProductService {
   }
 
   addProduct(product: Product) {
-    this.products.push(product);
-    this.productsChanged.next(this.products.slice());
+    setDoc(doc(this.prodRef), {
+      name: product.name,
+      desc: product.desc,
+      imagePath: product.imagePath,
+      price: product.price,
+    }).catch((err) => console.log(err.message));
   }
 
   updateProduct(index: number, newProduct: Product) {

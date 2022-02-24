@@ -1,7 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { exhaustMap, Subject, take } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
+import { collection, doc, Firestore, setDoc } from '@angular/fire/firestore';
+import { Subject } from 'rxjs';
 
 import { CartItem } from './cart-item/cart-item.model';
 
@@ -11,7 +10,9 @@ export class CartService {
   private cartItems: CartItem[] = [];
   private totalAmount = 0;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  orderRef = collection(this.afs, 'orders');
+
+  constructor(private afs: Firestore) {}
 
   getCartItems() {
     return this.cartItems.slice();
@@ -21,30 +22,24 @@ export class CartService {
     return this.cartItems.slice()[index];
   }
 
-  submitOrderHandler = (userData) => {
-    this.authService.user
-      .pipe(
-        take(1),
-        exhaustMap((user) => {
-          return this.http.post(
-            'https://sklepik-olejnik-smuszkie-5edcf-default-rtdb.firebaseio.com/orders.json',
-            JSON.stringify({
-              user: userData,
-              orderedItems: this.cartItems,
-            }),
-            {
-              params: new HttpParams().set('auth', user.token),
-            }
-          );
-        })
-      )
-      .subscribe((response) => {
-        console.log(response);
+  submitOrderHandler = (userData: []) => {
+    const items = [];
+    this.cartItems.map((item) => {
+      items.push({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        amount: item.amount,
       });
+    });
+    setDoc(doc(this.orderRef), {
+      user: userData,
+      orderedItems: items,
+    }).catch((err) => console.log(err.message));
     this.cartItems = [];
   };
 
-  addCartItem(id: number, name: string, price: number, amount: number) {
+  addCartItem(id: string, name: string, price: number, amount: number) {
     const newItem = new CartItem(id, name, price, amount);
 
     const existingCartItemIndex = this.cartItems.findIndex(
@@ -65,7 +60,7 @@ export class CartService {
     this.itemsChanged.next(this.cartItems.slice());
   }
 
-  removeCartItem(id: number) {
+  removeCartItem(id: string) {
     const existingCartItemIndex = this.cartItems.findIndex(
       (product) => product.id === id
     );

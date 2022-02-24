@@ -1,8 +1,12 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, Subject, tap, throwError } from 'rxjs';
-import { User } from './user.model';
+import {
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword,
+  Auth,
+} from '@angular/fire/auth';
+import { doc, setDoc, getDoc, Firestore } from '@angular/fire/firestore';
+import { Subject } from 'rxjs';
 
 export interface AuthResponseData {
   kind: string;
@@ -16,81 +20,48 @@ export interface AuthResponseData {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  user = new BehaviorSubject<User>(null);
+  isAdminChanged = new Subject<boolean>();
+  private isAdmin: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private afs: Firestore, private auth: Auth) {}
 
-  signup(email: string, password: string) {
-    return this.http
-      .post<AuthResponseData>(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDjKLmh1UYeqyMf8sgu1fi-h5Uefm03PbA',
-        {
-          email: email,
-          password: password,
-          returnSecureToken: true,
-        }
-      )
-      .pipe(
-        catchError(this.handleError),
-        tap((resData) => {
-          this.handleAuthentication(
-            resData.email,
-            resData.localId,
-            resData.idToken,
-            +resData.expiresIn
-          );
-        })
-      );
+  async signup(email: string, password: string): Promise<void> {
+    const credential = await createUserWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
+    await setDoc(doc(this.afs, 'users', credential.user.uid), {
+      isAdmin: false,
+    });
+    await getDoc(doc(this.afs, 'users', credential.user.uid))
+      .then((snapshot) => {
+        this.isAdmin = snapshot.data().isAdmin;
+        this.isAdminChanged.next(this.isAdmin);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
-  login(email: string, password: string) {
-    return this.http
-      .post<AuthResponseData>(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDjKLmh1UYeqyMf8sgu1fi-h5Uefm03PbA',
-        {
-          email: email,
-          password: password,
-          returnSecureToken: true,
-        }
-      )
-      .pipe(
-        catchError(this.handleError),
-        tap((resData) => {
-          this.handleAuthentication(
-            resData.email,
-            resData.localId,
-            resData.idToken,
-            +resData.expiresIn
-          );
-        })
-      );
+  async login(email: string, password: string): Promise<any> {
+    return await signInWithEmailAndPassword(this.auth, email, password)
+      .then((cred) => {
+        getDoc(doc(this.afs, 'users', cred.user.uid)).then((snapshot) => {
+          this.isAdmin = snapshot.data().isAdmin;
+          this.isAdminChanged.next(this.isAdmin);
+        });
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
   logout() {
-    this.user.next(null);
-    this.router.navigate(['/auth']);
-  }
-
-  private handleAuthentication(
-    email: string,
-    userId: string,
-    token: string,
-    expiresIn: number
-  ) {
-    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    const user = new User(email, userId, token, expirationDate);
-    this.user.next(user);
-  }
-
-  private handleError(errorRes: HttpErrorResponse) {
-    let errorMessage = 'Nieznany błąd :(';
-    if (!errorRes.error || !errorRes.error.error) {
-      return throwError(errorMessage);
-    }
-    switch (errorRes.error.error.message) {
-      case 'EMAIL_EXISTS':
-        errorMessage = 'Użytkownik o podanym mailu istnieje';
-    }
-    return throwError(errorMessage);
+    signOut(this.auth).catch((err) => {
+      console.log(err.message);
+    });
+    this.isAdmin = false;
+    this.isAdminChanged.next(this.isAdmin);
   }
 }

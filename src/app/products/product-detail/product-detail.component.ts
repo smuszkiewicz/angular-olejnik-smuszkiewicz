@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -10,16 +11,19 @@ import { ProductService } from '../product.service';
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
 })
-export class ProductDetailComponent implements OnInit, OnDestroy {
+@Injectable({ providedIn: 'root' })
+export class ProductDetailComponent implements OnInit {
   product: Product;
   id: number;
   isAuthenticated = false;
-  private userSub: Subscription;
+  isAdmin: boolean;
+  private subscription: Subscription;
 
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
+    private auth: Auth,
     private authService: AuthService
   ) {}
 
@@ -28,9 +32,20 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       this.id = params['id'];
       this.product = this.productService.getProduct(this.id);
     });
-    this.userSub = this.authService.user.subscribe((user) => {
-      this.isAuthenticated = !user ? false : true;
+
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.isAuthenticated = true;
+      } else {
+        this.isAuthenticated = false;
+      }
     });
+
+    this.subscription = this.authService.isAdminChanged.subscribe(
+      (isAdmin: boolean) => {
+        this.isAdmin = isAdmin;
+      }
+    );
   }
 
   onAddToCart() {
@@ -44,9 +59,5 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   onDeleteProduct() {
     this.productService.deleteProduct(this.id);
     this.router.navigate(['/products']);
-  }
-
-  ngOnDestroy() {
-    this.userSub.unsubscribe();
   }
 }

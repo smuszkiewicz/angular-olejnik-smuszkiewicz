@@ -6,6 +6,7 @@ import { ProductStartComponent } from './products/product-start/product-start.co
 import { ProductsComponent } from './products/products.component';
 import { CartComponent } from './cart/cart.component';
 import { AuthComponent } from './auth/auth.component';
+import { ProductAddComponent } from './products/product-add/product-add.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/products', pathMatch: 'full' },
@@ -14,19 +15,19 @@ const appRoutes: Routes = [
     component: ProductsComponent,
     children: [
       { path: '', component: ProductStartComponent },
-      { path: 'new', component: ProductEditComponent },
       {
         path: ':id',
         component: ProductDetailComponent,
       },
-      {
-        path: ':id/edit',
-        component: ProductEditComponent,
-      },
+      // {
+      //   path: ':id/edit',
+      //   component: ProductEditComponent,
+      // },
     ],
   },
   { path: 'cart', component: CartComponent },
   { path: 'auth', component: AuthComponent },
+  { path: 'add', component: ProductAddComponent },
 ];
 
 @NgModule({
